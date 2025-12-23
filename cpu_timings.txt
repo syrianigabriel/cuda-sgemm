@@ -1,0 +1,14 @@
+Time taken to multiply two 100 x 100 matrices: 0.007959
+Time taken to multiply two 300 x 300 matrices: 0.106666
+Time taken to multiply two 500 x 500 matrices: 0.425068
+Time taken to multiply two 700 x 700 matrices: 1.170786
+Time taken to multiply two 900 x 900 matrices: 2.487127
+Time taken to multiply two 2000 x 2000 matrices: 29.021683
+Time taken to multiply two 3000 x 3000 matrices: 100.017356
+Time taken to multiply two 4000 x 4000 matrices: 350.882543
+Time taken to multiply two 5000 x 5000 matrices: 671.966536
+Time taken to multiply two 6000 x 6000 matrices: 1148.384028
+Time taken to multiply two 7000 x 7000 matrices: 1787.147622
+Time taken to multiply two 8000 x 8000 matrices: 2496.773220
+Time taken to multiply two 9000 x 9000 matrices: 3449.916827
+Time taken to multiply two 10000 x 10000 matrices: 4791.369431

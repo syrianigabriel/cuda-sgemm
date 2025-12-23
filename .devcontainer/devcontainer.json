@@ -1,0 +1,16 @@
+{
+  "name": "CUDA Dev",
+  "image": "nvidia/cuda:13.1.0-devel-ubuntu24.04",
+  "workspaceFolder": "/workspace",
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
+  ],
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+      },
+      "extensions": ["ms-vscode.cpptools"]
+    }
+  }
+}
