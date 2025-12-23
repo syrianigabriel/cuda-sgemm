@@ -1,6 +1,6 @@
 {
   "name": "CUDA Dev",
-  "image": "nvidia/cuda:13.1.0-devel-ubuntu24.04",
+  "image": "nvidia/cuda:12.4.1-devel-ubuntu22.04",
   "workspaceFolder": "/workspace",
   "mounts": [
     "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
