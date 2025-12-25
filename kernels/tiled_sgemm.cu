@@ -1,5 +1,5 @@
 #include <cuda_runtime.h>
-#include "kernel_config.h"
+#include "sgemm_launches.h"
 
 constexpr int TILE_WIDTH = 16;
 

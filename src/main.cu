@@ -1,4 +1,4 @@
-#include "sgemm.h"
+#include "sgemm_api.h"
 #include "timer.h"
 #include <stdexcept>
 #include <string>
@@ -13,9 +13,11 @@
 int main(int argc, char const *argv[])
 {
     if (argc < 2) {
-        std::cout << "Usage: " << argv[0] << " <matrix_size>" << std::endl;
+        std::cerr << "Usage: " << argv[0] << " <matrix_size> [num_runs]" << std::endl;
         return 1;
     }
+
+    int num_runs = (argc >= 3) ? std::atoi(argv[2]) : 1;
 
     int N = atoi(argv[1]);
 
@@ -47,18 +49,26 @@ int main(int argc, char const *argv[])
     CUDA_CHECK(cudaMemcpy(d_B, B.data(), N*N*sizeof(float), cudaMemcpyHostToDevice));
 
     CudaTimer timer;
+    float tiled_total = 0, naive_total = 0;
 
-    timer.start();
-    // execute on GPU
-    sgemm(d_A, d_B, d_C, N, N, N, SgemmKernelEnum::Tiled);
-    CUDA_CHECK(cudaGetLastError());
-    float tiledSgemmMs = timer.stop();
+    for (int run = 0; run < num_runs; run++) 
+    {
+        timer.start();
+        sgemm(d_A, d_B, d_C, N, N, N, SgemmEnum::Tiled);
+        CUDA_CHECK(cudaGetLastError());
+        tiled_total += timer.stop();
 
-    timer.start();
-    // execute on GPU
-    sgemm(d_A, d_B, d_C, N, N, N, SgemmKernelEnum::Naive);
-    CUDA_CHECK(cudaGetLastError());
-    float naiveSgemmMs = timer.stop();
+        timer.start();
+        sgemm(d_A, d_B, d_C, N, N, N, SgemmEnum::Naive);
+        CUDA_CHECK(cudaGetLastError());
+        naive_total += timer.stop();
+
+        sgemm(A.data(), B.data(), B.data(), N, N, N, SgemmEnum::CPU);
+    }
+
+    std::cout << N << "," 
+          << tiled_total / num_runs << "," 
+          << naive_total / num_runs << std::endl;
 
     cudaFree(d_A);
     cudaFree(d_B);
