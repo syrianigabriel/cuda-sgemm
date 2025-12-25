@@ -1,9 +1,11 @@
 {
   "name": "CUDA Dev",
-  "image": "nvidia/cuda:12.4.1-devel-ubuntu22.04",
-  "workspaceFolder": "/workspace",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "workspaceFolder": "/cuda-sgemm",
   "mounts": [
-    "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
+    "source=${localWorkspaceFolder},target=/cuda-sgemm,type=bind,consistency=cached"
   ],
   "customizations": {
     "vscode": {
@@ -12,5 +14,6 @@
       },
       "extensions": ["ms-vscode.cpptools"]
     }
-  }
+  },
+  "remoteUser": "cudauser"
 }
