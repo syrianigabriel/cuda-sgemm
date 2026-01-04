@@ -1,5 +1,6 @@
 #include "sgemm_api.h"
 #include "sgemm_launches.h"
+#include <cublas_v2.h>
 #include <stdexcept>
 
 static void cpu_sgemm(const float* A, const float* B, float* C, int M, int N, int K)
@@ -23,16 +24,37 @@ void sgemm(const float* A, const float* B, float* C, int M, int N, int K, SgemmE
 
     switch (type)
     {
-        case SgemmEnum::Naive:
-            launch_naive_sgemm(A, B, C, M, N, K);
+        case SgemmEnum::CoalescedNaive:
+            launch_coalesced_naive_sgemm(A, B, C, M, N, K);
             break;
-
+        case SgemmEnum::UncoalescedNaive:
+            launch_uncoalesced_naive_sgemm(A, B, C, M, N, K);
+            break;
         case SgemmEnum::Tiled:
-            launch_tiled_sgemm(A, B, C, M, N, K);
+            launch_block_tiled_sgemm(A, B, C, M, N, K);
             break;
         case SgemmEnum::CPU:
             cpu_sgemm(A, B, C, M, N, K);
             break;
+        case SgemmEnum::CuBLAS:
+        {
+            cublasHandle_t handle;
+            cublasCreate(&handle);
+            const float alpha = 1.0f;
+            const float beta = 0.0f;
+
+            cublasSgemm(handle,
+                        CUBLAS_OP_N, CUBLAS_OP_N,
+                        N, M, K,
+                        &alpha,
+                        B, N,
+                        A, K,
+                        &beta,
+                        C, N);
+
+            cublasDestroy(handle);
+            break;
+        }
         default:
             throw std::runtime_error("Unsupported SGEMM kernel!");
     }

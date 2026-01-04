@@ -49,26 +49,43 @@ int main(int argc, char const *argv[])
     CUDA_CHECK(cudaMemcpy(d_B, B.data(), N*N*sizeof(float), cudaMemcpyHostToDevice));
 
     CudaTimer timer;
-    float tiled_total = 0, naive_total = 0;
+    float cublas_total = 0, tiled_total = 0, coalesced_naive_total = 0, uncoalesced_naive_total = 0, register_tiled_total = 0;
 
     for (int run = 0; run < num_runs; run++) 
     {
+        timer.start();
+        sgemm(d_A, d_B, d_C, N, N, N, SgemmEnum::CuBLAS);
+        CUDA_CHECK(cudaGetLastError());
+        cublas_total += timer.stop();
+
+        timer.start();
+        sgemm(d_A, d_B, d_C, N, N, N, SgemmEnum::UncoalescedNaive);
+        CUDA_CHECK(cudaGetLastError());
+        uncoalesced_naive_total += timer.stop();
+
+        timer.start();
+        sgemm(d_A, d_B, d_C, N, N, N, SgemmEnum::CoalescedNaive);
+        CUDA_CHECK(cudaGetLastError());
+        coalesced_naive_total += timer.stop();
+        timer.start();
+
         timer.start();
         sgemm(d_A, d_B, d_C, N, N, N, SgemmEnum::Tiled);
         CUDA_CHECK(cudaGetLastError());
         tiled_total += timer.stop();
 
         timer.start();
-        sgemm(d_A, d_B, d_C, N, N, N, SgemmEnum::Naive);
+        sgemm(d_A, d_B, d_C, N, N, N, SgemmEnum::RegisterTiled);
         CUDA_CHECK(cudaGetLastError());
-        naive_total += timer.stop();
-
-        sgemm(A.data(), B.data(), B.data(), N, N, N, SgemmEnum::CPU);
+        register_tiled_total += timer.stop();
     }
 
-    std::cout << N << "," 
-          << tiled_total / num_runs << "," 
-          << naive_total / num_runs << std::endl;
+    std::cout << N << ","
+          << cublas_total / num_runs << ","
+          << uncoalesced_naive_total / num_runs << ","
+          << coalesced_naive_total / num_runs << ","
+          << tiled_total / num_runs << ","
+          << register_tiled_total / num_runs << std::endl; 
 
     cudaFree(d_A);
     cudaFree(d_B);

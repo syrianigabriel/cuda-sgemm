@@ -2,10 +2,11 @@
 
 enum class SgemmEnum
 {
-    Naive,
+    CoalescedNaive,
+    UncoalescedNaive,
     Tiled,
     RegisterTiled,
-    WMMA,
+    CuBLAS,
     CPU
 };
 
