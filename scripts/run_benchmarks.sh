@@ -1,13 +1,28 @@
 #!/bin/bash
 
-mkdir -p results
+# Create results directory for this GPU
+mkdir -p results/rtx3080
 
-nvcc -o tiled tiled.cu || exit 1
-nvcc -o naive naive.cu || exit 1
+# Compile
+make
 
-for N in 256 512 1024 2048 4096 8192 16384; do
-    ./tiled $N >> results/tiled.txt
-    ./naive $N >> results/naive.txt
+# List of matrix sizes
+sizes=(256 512 1024 2048 4096 8192 16384)
+
+# Number of runs per size
+num_runs=5
+
+# Output file
+output_file="results/rtx3080/sgemm.csv"
+
+# Add header
+echo "N,CuBLAS,UncoalescedNaive,CoalescedNaive,Tiled,RegisterTiled" > "$output_file"
+
+# Loop over matrix sizes
+for N in "${sizes[@]}"; do
+    echo "Running N=$N for $num_runs runs..."
+    ./sgemm $N $num_runs >> "$output_file"
 done
 
-rm tiled naive
+# Clean build artifacts
+make clean

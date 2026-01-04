@@ -3,7 +3,7 @@
 
 constexpr int TILE_WIDTH = 16;
 
-__global__ void naive_sgemm_kernel(const float* A, const float* B, float* C, int M, int N, int K)
+__global__ void coalesced_naive_sgemm_kernel(const float* A, const float* B, float* C, int M, int N, int K)
 {
     int row = blockIdx.y * blockDim.y + threadIdx.y;
     int col = blockIdx.x * blockDim.x + threadIdx.x;
@@ -20,10 +20,10 @@ __global__ void naive_sgemm_kernel(const float* A, const float* B, float* C, int
     }
 }
 
-void launch_naive_sgemm(const float* A, const float* B, float* C, int M, int N, int K)
+void launch_coalesced_naive_sgemm(const float* A, const float* B, float* C, int M, int N, int K)
 {
     dim3 block(TILE_WIDTH, TILE_WIDTH);
     dim3 grid((N + TILE_WIDTH - 1) / TILE_WIDTH, (M + TILE_WIDTH - 1) / TILE_WIDTH);
 
-    naive_sgemm_kernel<<<grid, block>>>(A, B, C, M, N, K);
+    coalesced_naive_sgemm_kernel<<<grid, block>>>(A, B, C, M, N, K);
 }
