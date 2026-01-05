@@ -55,21 +55,25 @@ int main(int argc, char const *argv[])
     {
         timer.start();
         sgemm(d_A, d_B, d_C, N, N, N, SgemmEnum::CuBLAS);
+        CUDA_CHECK(cudaDeviceSynchronize());
         CUDA_CHECK(cudaGetLastError());
         cublas_total += timer.stop();
 
         timer.start();
         sgemm(d_A, d_B, d_C, N, N, N, SgemmEnum::UncoalescedNaive);
+        CUDA_CHECK(cudaDeviceSynchronize());
         CUDA_CHECK(cudaGetLastError());
         uncoalesced_naive_total += timer.stop();
 
         timer.start();
         sgemm(d_A, d_B, d_C, N, N, N, SgemmEnum::CoalescedNaive);
+        CUDA_CHECK(cudaDeviceSynchronize());
         CUDA_CHECK(cudaGetLastError());
         coalesced_naive_total += timer.stop();
 
         timer.start();
         sgemm(d_A, d_B, d_C, N, N, N, SgemmEnum::Tiled);
+        CUDA_CHECK(cudaDeviceSynchronize());
         CUDA_CHECK(cudaGetLastError());
         tiled_total += timer.stop();
 
