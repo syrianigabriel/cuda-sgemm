@@ -1,5 +1,5 @@
 NVCC = nvcc
-CFLAGS = -std=c++17 -O2
+CFLAGS = -std=c++17 -O2 -Iinclude -arch=sm_75
 INCLUDES = -Iinclude
 LIBS = -lcublas
 
