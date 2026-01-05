@@ -33,8 +33,8 @@ void sgemm(const float* A, const float* B, float* C, int M, int N, int K, SgemmE
         case SgemmEnum::Tiled:
             launch_block_tiled_sgemm(A, B, C, M, N, K);
             break;
-        case SgemmEnum::CPU:
-            cpu_sgemm(A, B, C, M, N, K);
+        case SgemmEnum::RegisterTiled:
+            launch_register_tiled_sgemm(A, B, C, M, N, K);
             break;
         case SgemmEnum::CuBLAS:
         {
@@ -53,6 +53,9 @@ void sgemm(const float* A, const float* B, float* C, int M, int N, int K, SgemmE
                         C, N);
 
             cublasDestroy(handle);
+            break;
+        case SgemmEnum::CPU:
+            cpu_sgemm(A, B, C, M, N, K);
             break;
         }
         default:
