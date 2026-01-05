@@ -7,10 +7,10 @@ mkdir -p results/rtx3080
 make
 
 # List of matrix sizes
-sizes=(250 500 1000 1500 2000 3000 5000 6000 7000 8000 9000 10000 11000 12000 13000 14000)
+sizes=(128 256 512 1024 2048 4096 8192 16384)
 
 # Number of runs per size
-num_runs=1
+num_runs=5
 
 # Output file
 output_file="results/rtx3080/sgemm.csv"

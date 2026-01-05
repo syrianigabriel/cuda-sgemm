@@ -51,6 +51,10 @@ int main(int argc, char const *argv[])
     CudaTimer timer;
     float cublas_total = 0, tiled_total = 0, coalesced_naive_total = 0, uncoalesced_naive_total = 0, register_tiled_total = 0;
 
+    // Warm-up CuBLAS call
+    sgemm(d_A, d_B, d_C, N, N, N, SgemmEnum::CuBLAS);
+    CUDA_CHECK(cudaDeviceSynchronize());
+
     for (int run = 0; run < num_runs; run++) 
     {
         timer.start();
