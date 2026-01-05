@@ -16,7 +16,7 @@ num_runs=5
 output_file="results/rtx3080/sgemm.csv"
 
 # Add header
-echo "N,CuBLAS,UncoalescedNaive,CoalescedNaive,Tiled" > "$output_file"
+echo "N,CuBLAS,UncoalescedNaive,CoalescedNaive,Tiled,RegisterTiled" > "$output_file"
 
 # Loop over matrix sizes
 for N in "${sizes[@]}"; do
