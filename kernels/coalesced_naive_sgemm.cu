@@ -9,14 +9,14 @@ __global__ void coalesced_naive_sgemm_kernel(const float* A, const float* B, flo
     int col = blockIdx.x * blockDim.x + threadIdx.x;
 
     // thread is within bounds
-    if (row < N && col < N)
+    if (row < M && col < N)
     {
         float total = 0;
         for (int k = 0; k < N; k++)
         {
-            total += A[row * N + k] * B[k * N + col];
+            total += A[row * K + k] * B[k * N + col];
         }
-        C[row*N + col] = total;
+        C[row * N + col] = total;
     }
 }
 
