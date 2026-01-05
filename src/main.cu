@@ -67,7 +67,6 @@ int main(int argc, char const *argv[])
         sgemm(d_A, d_B, d_C, N, N, N, SgemmEnum::CoalescedNaive);
         CUDA_CHECK(cudaGetLastError());
         coalesced_naive_total += timer.stop();
-        timer.start();
 
         timer.start();
         sgemm(d_A, d_B, d_C, N, N, N, SgemmEnum::Tiled);
@@ -84,7 +83,7 @@ int main(int argc, char const *argv[])
           << cublas_total / num_runs << ","
           << uncoalesced_naive_total / num_runs << ","
           << coalesced_naive_total / num_runs << ","
-          << tiled_total / num_runs << ","
+          << tiled_total / num_runs
         //   << register_tiled_total / num_runs
           << std::endl; 
 
